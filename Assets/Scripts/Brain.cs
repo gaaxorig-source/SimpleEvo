@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class Brain : MonoBehaviour
 {
+    [SerializeField]
+    private UnitManager unitManager;
+
     private Rigidbody2D rb;
     private BoxCollider2D myCollider;
     private GeneralGenetic myGens;
@@ -45,5 +48,9 @@ public class Brain : MonoBehaviour
         }
 
         if (b == null) Destroy(this.gameObject);
+        else
+        {
+            UnitManager.Sub(b);
+        }
     }
 }

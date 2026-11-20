@@ -31,18 +31,17 @@ public class PlantBehavior : Behavior
     protected override void OnAwake()
     {
         plantsCompetitorBuffer = new Collider2D[32];
+        if (sun == null)
+        {
+            sun = GameObject.Find("Sun").GetComponent<SunBehavior>();
+        }
     }
 
     protected override void OnStart()
     {
         int layer = LayerMask.NameToLayer("PlantBehavior");
         gameObject.layer = layer;
-
-        if (sun == null)
-        {
-            sun = GameObject.Find("Sun").GetComponent<SunBehavior>();
-        }
-
+        
         energyMinuse = myGens.EnergyMinuseGen * weight;
     }
 
@@ -104,7 +103,6 @@ public class PlantBehavior : Behavior
         GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
         clone.GetComponent<Rigidbody2D>().AddForce(cloneImpuls * devideImpuls, ForceMode2D.Impulse);
 
-        myGens.DevideMoment();
         energyPenaltyPersent += 10;
 
         return clone;

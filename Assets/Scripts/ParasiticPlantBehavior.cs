@@ -63,7 +63,7 @@ public class ParasiticPlantBehavior : Behavior
         if (currentVictim != null)
         {
             currentVictim.ParasitFactor(weight, parasiticUptake);
-            energy += parasiticUptake;
+            energy += parasiticUptake - (parasiticUptake/100 * energyPenaltyPersent);
             plantMatter += parasiticUptake;
         } else
         {
@@ -105,6 +105,8 @@ public class ParasiticPlantBehavior : Behavior
         GameObject clone = Instantiate(gameObject, transform.position, transform.rotation);
         ParasiticPlantBehavior cloneBehavior = clone.GetComponent<ParasiticPlantBehavior>();
         cloneBehavior.SetSpesGen(mySpesGen);
+
+        energyPenaltyPersent += 10;
 
         return clone;
     }

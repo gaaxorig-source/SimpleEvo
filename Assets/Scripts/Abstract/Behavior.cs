@@ -3,9 +3,12 @@ using UnityEngine;
 
 public abstract class Behavior : MonoBehaviour
 {
+    public int managerIndex;
     protected GeneralGenetic myGens;
     protected Collider2D myCollider;
 
+    public bool isDead = false;
+    private bool isUnsubbed = false;
     private static int cloneCount = 0;
 
     [SerializeField]
@@ -14,7 +17,7 @@ public abstract class Behavior : MonoBehaviour
     [SerializeField]
     protected float energyPenaltyPersent = 0;
     [SerializeField]
-    protected float allEnergyPenaltyPersent = 0; // only for inspector
+    protected float allEnergyPenaltyPersent = 0; 
     protected float speed;
     [SerializeField]
     protected float weight;
@@ -56,20 +59,26 @@ public abstract class Behavior : MonoBehaviour
 
     protected abstract void OnStart();
 
-    private void Update()
+    public void MyUpdate(float deltaTime)
     {
         AdjustWeight();
 
-        OnUpdate(Time.deltaTime);
+        OnUpdate(deltaTime);
     }
 
     protected abstract void OnUpdate(float deltaTime);
 
-    private void FixedUpdate()
+    public void MyFixedUpdate(float fixedDeltaTime)
     {
-        if (energy <= 0)
+        if (energy <= 0 || isDead)
         {
-            Destroy(this.gameObject);
+            isDead = true;
+            if (!isUnsubbed)
+            {
+                isUnsubbed = true;
+                UnitManager.UnSub(this);
+            }
+
             return;
         }
 
@@ -77,13 +86,14 @@ public abstract class Behavior : MonoBehaviour
 
         energy -= energyMinuse;
 
-        OnFixedUpdate(Time.fixedDeltaTime);
+        OnFixedUpdate(fixedDeltaTime);
     }
     protected abstract void OnFixedUpdate(float fixedDeltaTime);
     private void AbstractcDivide() {
         GameObject clone = Divide();
         if (clone != null)
         {
+            myGens.DevideMoment();
             cloneCount++;
             clone.name = cloneCount + "";
         }
